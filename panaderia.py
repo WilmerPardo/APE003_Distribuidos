@@ -6,20 +6,19 @@ CAPACIDAD_VITRINA = 10
 
 
 def _version_secuencial():
-    """Secuencial: primero produce TODOS los panes, luego el cliente los consume."""
     vitrina  = []
     log      = []
     producidos = []
     consumidos = []
 
-    #produccion completa
+    #produce panes
     for i in range(N_PANES):
         pan = f"Pan {i}"
         vitrina.append(pan)
         producidos.append(pan)
         log.append(f"[SEC] Panadero horneó: {pan}")
 
-    #consumo completo
+    #se consumen los panes
     for _ in range(N_PANES):
         pan = vitrina.pop(0)
         consumidos.append(pan)
@@ -29,10 +28,9 @@ def _version_secuencial():
 
 
 def _version_concurrente():
-    """Concurrente: panadero y cliente operan en paralelo con semáforos + mutex."""
-    espacios_vacios = threading.Semaphore(CAPACIDAD_VITRINA)  
-    panes_listos    = threading.Semaphore(0)                   
-    mutex_vitrina   = threading.Lock()                         
+    espacios_vacios = threading.Semaphore(CAPACIDAD_VITRINA)    #notifica al panadero los huecos que quedan
+    panes_listos    = threading.Semaphore(0)                    #panes por comprar el cliente (0)
+    mutex_vitrina   = threading.Lock()                          #protege la vitrina
     vitrina    = []
     log        = []
     log_lock   = threading.Lock()
@@ -42,7 +40,7 @@ def _version_concurrente():
     def panadero():
         for i in range(N_PANES):
             pan = f"Pan {i}"
-            espacios_vacios.acquire()           
+            espacios_vacios.acquire()               #mete pan/resta 1 espacio
             with mutex_vitrina:                 
                 vitrina.append(pan)
                 producidos.append(pan)
@@ -55,7 +53,7 @@ def _version_concurrente():
         for _ in range(N_PANES):
             panes_listos.acquire()              
             with mutex_vitrina:                 
-                pan = vitrina.pop(0)
+                pan = vitrina.pop(0)            #toma el pan
                 consumidos.append(pan)
                 with log_lock:
                     log.append(f"Cliente compró: {pan}")

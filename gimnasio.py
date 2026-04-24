@@ -4,22 +4,20 @@ import random
 
 class MiSemaforo:
     def __init__(self, valor):
-        self.contador    = valor
+        self.contador    = valor        
         self.cerrojo     = threading.Lock()
-        self.cola_espera = threading.Condition(self.cerrojo)
+        self.cola_espera = threading.Condition(self.cerrojo)    #hilos esperen
 
     def esperar(self):
-        with self.cerrojo:                          # BLOQUEAR(cerrojo)
-            while self.contador == 0:
-                self.cola_espera.wait()             # ESPERAR_CONDICION
-            self.contador -= 1                      # contador <- contador - 1
-                                                    # DESBLOQUEAR(cerrojo)
+        with self.cerrojo:                          #candado
+            while self.contador == 0:               #hay espacios?
+                self.cola_espera.wait()             #espera maquina 
+            self.contador -= 1                      #si hay espacio, cobra maquina
 
     def senial(self):
-        with self.cerrojo:                          # BLOQUEAR(cerrojo)
-            self.contador += 1                      # contador <- contador + 1
-            self.cola_espera.notify()               # NOTIFICAR(cola_espera)
-                                                    # DESBLOQUEAR(cerrojo)
+        with self.cerrojo:   
+            self.contador += 1                      #devuelve la maquina
+            self.cola_espera.notify()               #despierta a uno 
 
 
 def _simular_uso(id_atleta, log):
@@ -38,8 +36,8 @@ def _version_secuencial(N_ATLETAS):
 def _version_concurrente(N_ATLETAS, CAPACIDAD):
     semaforo = MiSemaforo(CAPACIDAD)
     log      = []
-    log_lock = threading.Lock()
-    uso_lock = threading.Lock()
+    log_lock = threading.Lock()     #protege la lista
+    uso_lock = threading.Lock()     #protege el contador
 
     recursos_en_uso = [0]
     max_en_uso      = [0]   
@@ -94,14 +92,14 @@ def ejecutar_gimnasio():
     _version_secuencial(N_ATLETAS)
     tiempo_sec = time.perf_counter() - t0
 
-    # concurrente
+    #concurrente
     t0 = time.perf_counter()
     log_con, max_en_uso, historial = _version_concurrente(N_ATLETAS, CAPACIDAD)
     tiempo_con = time.perf_counter() - t0
 
     valido      = max_en_uso <= CAPACIDAD
 
-    # serie de valores de uso para graficar en el frontend
+    #serie de valores de uso para graficar en el frontend
     serie_uso = [snap[2] for snap in historial]
 
     return {
@@ -115,6 +113,4 @@ def ejecutar_gimnasio():
         # rendimiento
         "tiempo_secuencial":  round(tiempo_sec, 6),
         "tiempo_concurrente": round(tiempo_con, 6),
-        # comunicación
-        "mecanismo_comunicacion": "Semáforo de Conteo (Mutex + Condition Variable)",
     }

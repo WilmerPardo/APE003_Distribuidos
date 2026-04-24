@@ -6,9 +6,8 @@ N_LECTORES = 5   # 3 antes del escritor + 2 después
 
 
 def _version_secuencial():
-    """Secuencial: lectores y escritor se ejecutan de uno en uno."""
     log = []
-    # Simulamos la misma secuencia de hilos: L0,L1,L2, Escritor, L3,L4
+    #L0,L1,L2, Escritor, L3,L4
     for i in range(3):
         log.append(f"[SEC] Lector {i} leyendo el tablón.")
     log.append("[SEC] Escritor actualizando el tablón de notas exclusívamente.")
@@ -18,10 +17,9 @@ def _version_secuencial():
 
 
 def _version_concurrente():
-    """Concurrente: lectores comparten acceso, escritor es exclusivo."""
-    cant_lectores   = 0
-    mutex_lectores  = threading.Lock()
-    sem_escritor    = threading.Semaphore(1)
+    cant_lectores   = 0     #cuantos leen
+    mutex_lectores  = threading.Lock()      #protege al contador, que no se sume 1 a arriba
+    sem_escritor    = threading.Semaphore(1)        #cancado del tablon
     log             = []
     log_lock        = threading.Lock()
     activos_lock    = threading.Lock()
@@ -33,7 +31,7 @@ def _version_concurrente():
         nonlocal cant_lectores
         with mutex_lectores:                        
             cant_lectores += 1
-            if cant_lectores == 1:
+            if cant_lectores == 1:  #lector cierra la puerta
                 sem_escritor.acquire()              
 
         with activos_lock:
@@ -49,8 +47,8 @@ def _version_concurrente():
 
         with mutex_lectores:                        
             cant_lectores -= 1
-            if cant_lectores == 0:
-                sem_escritor.release()              
+            if cant_lectores == 0:      
+                sem_escritor.release()               #ultimo lector resta 1
 
     def escritor():
         sem_escritor.acquire()                      

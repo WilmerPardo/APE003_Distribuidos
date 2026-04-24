@@ -4,7 +4,6 @@ import time
 N_TOTAL = 5
 
 def _version_secuencial():
-    """Secuencial: ejecuta Fase 1 de todos los hilos, luego Fase 2."""
     log = []
     # Fase 1
     for i in range(N_TOTAL):
@@ -17,10 +16,9 @@ def _version_secuencial():
 
 
 def _version_concurrente():
-    """Concurrente: los hilos esperan en la barrera hasta que TODOS lleguen."""
-    contador         = 0
-    mtx_barrera      = threading.Lock()
-    var_cond_barrera = threading.Condition(mtx_barrera)
+    contador         = 0        #hilos q han terminado fase 1
+    mtx_barrera      = threading.Lock()     #impide q 2 hilos no anoten al mismo tiempo
+    var_cond_barrera = threading.Condition(mtx_barrera) #hilos esperan hasta q los despierten
     log              = []
     log_lock         = threading.Lock()
     fase2_iniciadas  = []
@@ -33,12 +31,12 @@ def _version_concurrente():
             with log_lock:
                 log.append(f"Hilo {id_hilo} completó Fase 1. Esperando barrera...")
 
-            if contador == N_TOTAL:
+            if contador == N_TOTAL:         #el contador es 5? 
                 with log_lock:
                     log.append("--- Último hilo alcanzó la barrera. Inicia Fase 2 ---")
-                var_cond_barrera.notify_all()       
-            else:
-                while contador < N_TOTAL:           
+                var_cond_barrera.notify_all()           #despiertan simultaneamente
+            else:       
+                while contador < N_TOTAL:   #no, los pone a dormir        
                     var_cond_barrera.wait()         
 
         fase2_iniciadas.append(id_hilo)

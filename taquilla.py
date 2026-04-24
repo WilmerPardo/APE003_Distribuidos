@@ -12,10 +12,10 @@ def _version_secuencial(N_HILOS, M_VENTAS):
 def _version_concurrente(N_HILOS, M_VENTAS):
     #mutex
     boletos_vendidos = 0
-    cerrojo = threading.Lock()
+    cerrojo = threading.Lock()      #candado
 
     def ejecutar_venta():
-        nonlocal boletos_vendidos
+        nonlocal boletos_vendidos   #modifica la externa
         for _ in range(M_VENTAS):
             with cerrojo:                       #bloquear cerrojo
                 boletos_vendidos += 1           #incrementar atomico
@@ -26,7 +26,7 @@ def _version_concurrente(N_HILOS, M_VENTAS):
         hilos.append(h)
         h.start()
 
-    for h in hilos:                           # esperar hilos
+    for h in hilos:                           #pausa hasta q el hilo termine
         h.join()
 
     return boletos_vendidos
