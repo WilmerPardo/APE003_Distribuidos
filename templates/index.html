@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prácticas de Sincronización Concurrente | FEIRNR</title>
+  <meta name="description" content="Laboratorio interactivo de sincronización concurrente: Mutex, Semáforos, Productor-Consumidor, Lectores-Escritores y Barreras." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <h1>Sincronización<br/>Concurrente</h1>
+    
+  </header>
+
+  <main class="container">
+    <div class="section-divider">
+      <div class="section-label">5 ejercicios</div>
+    </div>
+
+    <div class="exercises-grid">
+
+      <!-- ── EJ 1: TAQUILLA ── -->
+      <div class="card" data-ex="1" id="card-1">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-header-row">
+            <div class="card-icon">🎟️</div>
+            <div>
+              <div class="card-num">Ejercicio 1</div>
+              <div class="card-title">Dilema de la Taquilla</div>
+              <span class="card-subtitle">Exclusión Mutua · Mutex</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            5 hilos incrementan un contador compartido 1 000 000 veces cada uno.
+            El mutex garantiza que no ocurra condición de carrera.
+          </p>
+          <button class="btn-run" id="btn-1" onclick="ejecutar(1)" aria-label="Ejecutar Ejercicio 1">
+            <span class="btn-icon">▶ Ejecutar</span>
+            <div class="spinner"></div>
+          </button>
+          <div class="result-panel" id="result-1">
+            <div class="result-status" id="status-1">
+              <div class="status-dot"></div>
+              <span id="status-text-1"></span>
+            </div>
+            <div class="result-meta" id="meta-1"></div>
+            <div class="criteria-text" id="criteria-1"></div>
+            <div class="benchmark-section" id="bench-1" style="display:none"></div>
+          </div>
+          <div class="error-box" id="error-1"></div>
+        </div>
+      </div>
+
+      <!-- ── EJ 2: GIMNASIO ── -->
+      <div class="card" data-ex="2" id="card-2">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-header-row">
+            <div class="card-icon">🏋️</div>
+            <div>
+              <div class="card-num">Ejercicio 2</div>
+              <div class="card-title">El Gimnasio</div>
+              <span class="card-subtitle">Semáforos de Conteo</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            8 atletas compiten por 3 máquinas. El semáforo de conteo (valor 3)
+            controla el acceso sin superar la capacidad.
+          </p>
+          <button class="btn-run" id="btn-2" onclick="ejecutar(2)" aria-label="Ejecutar Ejercicio 2">
+            <span class="btn-icon">▶ Ejecutar</span>
+            <div class="spinner"></div>
+          </button>
+          <div class="result-panel" id="result-2">
+            <div class="result-status" id="status-2">
+              <div class="status-dot"></div>
+              <span id="status-text-2"></span>
+            </div>
+            <div class="result-meta" id="meta-2"></div>
+            <div class="criteria-text" id="criteria-2"></div>
+            <div class="benchmark-section" id="bench-2" style="display:none"></div>
+            <div class="log-container" id="log-2">
+              <div class="log-label">Registro de Actividad</div>
+            </div>
+          </div>
+          <div class="error-box" id="error-2"></div>
+        </div>
+      </div>
+
+      <!-- ── EJ 3: PANADERÍA ── -->
+      <div class="card" data-ex="3" id="card-3">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-header-row">
+            <div class="card-icon">🍞</div>
+            <div>
+              <div class="card-num">Ejercicio 3</div>
+              <div class="card-title">La Vitrina de la Panadería</div>
+              <span class="card-subtitle">Productor–Consumidor</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            Panadero y cliente sincronizan el acceso a una vitrina (buffer).
+            Semáforos de espacios vacíos y panes listos + mutex garantizan orden.
+          </p>
+          <button class="btn-run" id="btn-3" onclick="ejecutar(3)" aria-label="Ejecutar Ejercicio 3">
+            <span class="btn-icon">▶ Ejecutar</span>
+            <div class="spinner"></div>
+          </button>
+          <div class="result-panel" id="result-3">
+            <div class="result-status" id="status-3">
+              <div class="status-dot"></div>
+              <span id="status-text-3"></span>
+            </div>
+            <div class="result-meta" id="meta-3"></div>
+            <div class="criteria-text" id="criteria-3"></div>
+            <div class="benchmark-section" id="bench-3" style="display:none"></div>
+            <div class="log-container" id="log-3">
+              <div class="log-label">Registro de Actividad</div>
+            </div>
+          </div>
+          <div class="error-box" id="error-3"></div>
+        </div>
+      </div>
+
+      <!-- ── EJ 4: TABLÓN ── -->
+      <div class="card" data-ex="4" id="card-4">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-header-row">
+            <div class="card-icon">📋</div>
+            <div>
+              <div class="card-num">Ejercicio 4</div>
+              <div class="card-title">El Tablón de Notas</div>
+              <span class="card-subtitle">Lectores–Escritores</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            5 lectores concurrentes y 1 escritor exclusivo. El primer lector
+            "cierra la puerta" al escritor; el último la abre.
+          </p>
+          <button class="btn-run" id="btn-4" onclick="ejecutar(4)" aria-label="Ejecutar Ejercicio 4">
+            <span class="btn-icon">▶ Ejecutar</span>
+            <div class="spinner"></div>
+          </button>
+          <div class="result-panel" id="result-4">
+            <div class="result-status" id="status-4">
+              <div class="status-dot"></div>
+              <span id="status-text-4"></span>
+            </div>
+            <div class="result-meta" id="meta-4"></div>
+            <div class="criteria-text" id="criteria-4"></div>
+            <div class="benchmark-section" id="bench-4" style="display:none"></div>
+            <div class="log-container" id="log-4">
+              <div class="log-label">Registro de Actividad</div>
+            </div>
+          </div>
+          <div class="error-box" id="error-4"></div>
+        </div>
+      </div>
+
+      <!-- ── EJ 5: BARRERA ── -->
+      <div class="card" data-ex="5" id="card-5">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-header-row">
+            <div class="card-icon">🚧</div>
+            <div>
+              <div class="card-num">Ejercicio 5</div>
+              <div class="card-title">Punto de Encuentro</div>
+              <span class="card-subtitle">Barrera de Sincronización</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            5 hilos deben completar la Fase 1 antes de que cualquiera inicie la
+            Fase 2. La variable de condición actúa como punto de encuentro.
+          </p>
+          <button class="btn-run" id="btn-5" onclick="ejecutar(5)" aria-label="Ejecutar Ejercicio 5">
+            <span class="btn-icon">▶ Ejecutar</span>
+            <div class="spinner"></div>
+          </button>
+          <div class="result-panel" id="result-5">
+            <div class="result-status" id="status-5">
+              <div class="status-dot"></div>
+              <span id="status-text-5"></span>
+            </div>
+            <div class="result-meta" id="meta-5"></div>
+            <div class="criteria-text" id="criteria-5"></div>
+            <div class="benchmark-section" id="bench-5" style="display:none"></div>
+            <div class="log-container" id="log-5">
+              <div class="log-label">Registro de Actividad</div>
+            </div>
+          </div>
+          <div class="error-box" id="error-5"></div>
+        </div>
+      </div>
+
+    </div><!-- end grid -->
+  </main>
+
+  <script>
+    const endpoints = {
+      1: '/api/taquilla',
+      2: '/api/gimnasio',
+      3: '/api/panaderia',
+      4: '/api/tablon',
+      5: '/api/barrera',
+    };
+
+    async function ejecutar(n) {
+      const btn        = document.getElementById(`btn-${n}`);
+      const panel      = document.getElementById(`result-${n}`);
+      const errorBox   = document.getElementById(`error-${n}`);
+      const statusEl   = document.getElementById(`status-${n}`);
+      const statusText = document.getElementById(`status-text-${n}`);
+      const metaEl     = document.getElementById(`meta-${n}`);
+      const criteriaEl = document.getElementById(`criteria-${n}`);
+
+      btn.disabled = true;
+      btn.classList.add('loading');
+      panel.classList.remove('visible');
+      errorBox.classList.remove('visible');
+      errorBox.textContent = '';
+
+      try {
+        const res = await fetch(endpoints[n]);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        const passed = data.valido;
+        statusEl.className = `result-status ${passed ? 'pass' : 'fail'}`;
+        statusText.textContent = passed
+          ? '✓ Criterio de validación CUMPLIDO'
+          : '✗ Criterio de validación NO cumplido';
+
+        metaEl.innerHTML = buildMeta(n, data);
+        criteriaEl.textContent = `📋 ${data.criterio || ''}`;
+
+        renderBenchmark(n, data);
+
+        const logContainer = document.getElementById(`log-${n}`);
+        if (logContainer && data.log) {
+          const label = logContainer.querySelector('.log-label');
+          logContainer.innerHTML = '';
+          if (label) logContainer.appendChild(label);
+          data.log.forEach((line, i) => {
+            const div = document.createElement('div');
+            div.className = 'log-line' + (line.includes('---') ? ' highlight' : '');
+            div.innerHTML = `<span class="log-idx">${String(i+1).padStart(2,'0')}</span><span>${escapeHtml(line)}</span>`;
+            logContainer.appendChild(div);
+          });
+          logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        panel.classList.add('visible');
+      } catch (err) {
+        errorBox.textContent = `❌ Error al conectar con el servidor: ${err.message}`;
+        errorBox.classList.add('visible');
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+      }
+    }
+
+    function buildMeta(n, data) {
+      if (n === 1) {
+        const pct   = ((data.boletos_vendidos / data.esperado) * 100).toFixed(2);
+        const varOk = data.variacion === 0;
+        const runs  = data.resultados_runs || [];
+        const times = data.tiempos_runs    || [];
+        const runsHtml = runs.map((r, i) => {
+          const ok = r === data.esperado;
+          return `<div class="run-row">
+            <span class="run-idx">Run ${String(i+1).padStart(2,'0')}</span>
+            <span class="run-val" style="color:${ok?'#10b981':'#ef4444'}">${r.toLocaleString()}</span>
+            <span class="run-time">${times[i] ?? '—'}s</span>
+            <span class="run-badge" style="background:${ok?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)'};color:${ok?'#6ee7b7':'#fca5a5'}">${ok?'✓':'✗'}</span>
+          </div>`;
+        }).join('');
+        return `
+          <div class="meta-chip">Vendidos: <strong>${data.boletos_vendidos.toLocaleString()}</strong></div>
+          <div class="meta-chip">Esperado: <strong>${data.esperado.toLocaleString()}</strong></div>
+          <div class="meta-chip">Exactitud: <strong>${pct}%</strong></div>
+          <div class="meta-chip">Runs: <strong>${data.n_runs || 1}</strong></div>
+          <div class="meta-chip">Variación: <strong style="color:${varOk?'#10b981':'#ef4444'}">${data.variacion ?? '—'}</strong></div>
+          ${runsHtml ? `<div class="runs-table">${runsHtml}</div>` : ''}
+        `;
+      }
+      if (n === 2) {
+        const ok = data.max_en_uso <= data.capacidad;
+        return `
+          <div class="meta-chip">Atletas: <strong>${data.n_atletas}</strong></div>
+          <div class="meta-chip">Capacidad máx: <strong>${data.capacidad}</strong></div>
+          <div class="meta-chip">Máx simultáneos: <strong style="color:${ok?'#10b981':'#ef4444'}">${data.max_en_uso}</strong></div>
+        `;
+      }
+      if (n === 3) {
+        return `
+          <div class="meta-chip">Producidos: <strong>${data.producidos}</strong></div>
+          <div class="meta-chip">Consumidos: <strong>${data.consumidos}</strong></div>
+          <div class="meta-chip">Balance: <strong>${data.producidos === data.consumidos ? '✓ Par' : '✗ Impar'}</strong></div>
+        `;
+      }
+      if (n === 4) {
+        return `
+          <div class="meta-chip">Máx lectores concurrentes: <strong>${data.max_lectores_concurrentes}</strong></div>
+          <div class="meta-chip">Solapamiento: <strong style="color:${data.valido?'#10b981':'#ef4444'}">${data.valido ? 'No detectado ✓' : 'Detectado ✗'}</strong></div>
+        `;
+      }
+      if (n === 5) {
+        return `
+          <div class="meta-chip">Total hilos: <strong>${data.n_total}</strong></div>
+          <div class="meta-chip">En Fase 2: <strong>${data.hilos_fase2}</strong></div>
+          <div class="meta-chip">Sincronización: <strong style="color:${data.valido?'#10b981':'#ef4444'}">${data.valido ? 'Correcta ✓' : 'Falló ✗'}</strong></div>
+        `;
+      }
+      return '';
+    }
+
+    function renderBenchmark(n, data) {
+      const bench = document.getElementById(`bench-${n}`);
+      if (!bench) return;
+      const ts = data.tiempo_secuencial;
+      const tc = data.tiempo_concurrente;
+      if (ts == null || tc == null) { bench.style.display = 'none'; return; }
+
+      const maxT   = Math.max(ts, tc);
+      const pctSec = maxT > 0 ? ((ts / maxT) * 100).toFixed(1) : 100;
+      const pctCon = maxT > 0 ? ((tc / maxT) * 100).toFixed(1) : 100;
+
+      bench.style.display = 'block';
+      bench.innerHTML = `
+        <div class="benchmark-title">⏱ Comparativa de Rendimiento</div>
+        <div class="bench-row">
+          <span class="bench-label">Secuencial</span>
+          <div class="bench-bar-wrap"><div class="bench-bar-fill sec" style="width:${pctSec}%"></div></div>
+          <span class="bench-value">${ts.toFixed(6)} s</span>
+        </div>
+        <div class="bench-row">
+          <span class="bench-label">Concurrente</span>
+          <div class="bench-bar-wrap"><div class="bench-bar-fill con" style="width:${pctCon}%"></div></div>
+          <span class="bench-value">${tc.toFixed(6)} s</span>
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>
